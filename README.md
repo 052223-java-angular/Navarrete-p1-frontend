@@ -7,27 +7,31 @@ This is a full stack movie application that will use Angular on the frontend and
 ## User Stories
 
 - **As a user**, I want to register an account so that I can have a personalized experience
-- **As a user**, I want to log in to my account so that I can access my movie/show lists.
-- **As a user**, I want to browse through movies/shows only when logged in.
-- **As a user**, I want to search for movies/shows by name, category, or IMDb rating so that I can find the movie/show I am looking for.
-- **As a user**, I want to add movies/shows to my movie/show lists or bookmark movies/shows to plan on watching them later.
-- **As a user**, I want to modify the movies/shows in my movie/show lists by removing them or changing bookmark category.
-- **As a user**, I want to rate and review movies/shows so that I can share my experience with other users.
-- **As a user**, I want to view ratings and reviews from other users so that I can make a decision on which movies/shows to watch.
+- **As a user**, I want to log in to my account so that I can access my movie lists.
+- **As a user**, I want to browse through movies only when logged in.
+- **As a user**, I want to search for movies by name, category, or rating range so that I can find the movie I am looking for.
+- **As a user**, I want to be able to create movie lists so I can group together my movies.
+- **As a user**, I want to add movies to my movie lists so I can keep track of movies or group them together by a certain topic.
+- **As a user**, I want to modify the movies in my movie lists by removing them.
+- **As a user**, I want to modify my movies lists by deleting them.
+- **As a user**, I want to rate and review movies so that I can share my experience with other users.
+- **As a user**, I want to view ratings and reviews from other users so that I can make a decision on which movies to watch.
 
 
 ## MVP (Minimum Viable Product)
 
 - User registration and login
-- Browsing and searching for movies/shows
-- Adding movies/shows to movie/show lists or adding a bookmark category
-- Modifying the movie/show list and bookmarks
-- Movie/show rating and reviewing
+- User roles for authentication
+- Browsing and searching for movies
+- Search for movies using a filter
+- Adding movies to movie lists
+- Modifying the movie lists and movies in a movie list
+- movie rating and reviewing
 
 ## Stretch Goals
 
-- Implementing a recommendation system based on user's previous watched movies/shows or favorite movies/shows
-- Implementing a streaming service recomendation system that give users the cheapest services to watch a list of movies/shows
+- Implementing a recommendation system based on user's previous watched movies or favorite movies
+- Implementing a streaming service recomendation system that give users the cheapest services to watch a list of movies
 - Implementing a community polling system
 
 ## Tech Stacks
@@ -35,7 +39,7 @@ This is a full stack movie application that will use Angular on the frontend and
 - **Java**: The backend programming language used for building the application.
 - **Typescript**: A strongly typed programming language that is a superset of Javascript used in the Angular framework.
 - **Tailwind**: A CSS framwork used to style the the client side application.
-- **PostgreSQL**: Used as the database to store user, movie/show lists, and bookmarks.
+- **PostgreSQL**: Used as the database to store user, movie lists, and bookmarks.
 - **Springboot**: A backend framework used to build application's REST API.
 - **Angular**: Frontend framework used to build the client side application.
 - **Lombok**: To reduce boilerplate code;
@@ -63,4 +67,9 @@ This is a full stack movie application that will use Angular on the frontend and
 - **Documentation**: The repository should include a README file with clear instructions on how to run the application. Code should be well-commented to allow for easy understanding and maintenance.
 
 - **Scalable**: The design of the application should be scalable, allowing for easy addition of new features or modifications in the future.
+
+
+# ERD
+
+![entity relationship diagram](src/main/resources/db/p1-erd.png?raw=true)
 
