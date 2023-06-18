@@ -19,6 +19,8 @@ export class RegisterComponent {
     password: '',
     confirmPassword: '',
   };
+  emailRegEx = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$');
+  passwordRegEx = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&+=])(?=\\S+$).{0,}$');
   isLoading = false;
 
   constructor(
@@ -67,7 +69,7 @@ export class RegisterComponent {
       },
     });
 
-    // rest form
+    // reset form
     form.reset();
   }
 }
