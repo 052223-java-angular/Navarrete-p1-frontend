@@ -13,20 +13,19 @@ import { ToasterService } from 'src/app/services/toaster/toaster.service';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  user: registerUserReq;
+  user: registerUserReq = {
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  };
+  isLoading = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private toaster: ToasterService
-  ) {
-    this.user = {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    };
-  }
+  ) {}
 
   /* ----------------- Life cycle methods --------------------- */
 
@@ -39,6 +38,9 @@ export class RegisterComponent {
     if (form.invalid) {
       return;
     }
+
+    // show loading component
+    this.isLoading = true;
 
     // set user values
     this.user.username = form.value.username;
@@ -53,11 +55,15 @@ export class RegisterComponent {
         this.toaster.success('You have successfully registerd.');
         // navigate to login page
         this.router.navigate(['../login']);
+        // remove loading
+        this.isLoading = false;
       },
       error: (error) => {
         delete error.error['timestamp'];
         // render error toaster
         this.toaster.error(error.error);
+        // remove loading
+        this.isLoading = false;
       },
     });
 
