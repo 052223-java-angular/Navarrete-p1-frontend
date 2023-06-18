@@ -1,23 +1,24 @@
 <div class="flex flex-grow justify-center items-center bg-slate-50">
-  <form action="" class="w-full max-w-[400px]">
+  <form class="w-full max-w-[400px]" (ngSubmit)="onSubmit(f)" #f="ngForm">
     <h1>Create an account</h1>
     <div class="form-item">
       <label for="username">Username:</label>
-      <input type="text" name="username" id="username" placeholder="(between 8 - 20 characters)">
+      <input type="text" name="username" id="username" placeholder="(between 8 - 20 characters)" ngModel required>
     </div>
     <div class="form-item">
       <label for="email">Email:</label>
-      <input type="email" name="email" id="email">
+      <input type="email" name="email" id="email" ngModel required email>
     </div>
     <div class="form-item">
       <label for="password">Password:</label>
-      <input type="password" name="password" id="password" placeholder="(at least 8 characters required)">
+      <input type="password" name="password" id="password" placeholder="(at least 8 characters required)" ngModel
+        required>
     </div>
     <div class="form-item">
-      <label for="confirmpassword">Confirm Password:</label>
-      <input type="password" name="confirmpassword" id="confirmpassword">
+      <label for="confirmPassword">Confirm Password:</label>
+      <input type="password" name="confirmPassword" id="confirmPassword" ngModel required>
     </div>
-    <button class="bg-sky-600 hover:bg-sky-800">Sign Up</button>
+    <button class="bg-sky-600 hover:bg-sky-800" type="submit" [disabled]="!f.valid">Sign Up</button>
     <small><a routerLink="../login">Already have an account?</a></small>
   </form>
 </div>
