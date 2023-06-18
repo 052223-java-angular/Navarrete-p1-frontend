@@ -5,11 +5,6 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-html,
-body {
-  @apply h-full;
-}
-
 body {
   font-family: "Rubik", sans-serif;
   @apply text-slate-50 bg-gradient-to-br from-slate-950 to-sky-800;
@@ -25,9 +20,27 @@ h1 {
 }
 
 button {
-  @apply rounded-lg transition-all ease-in-out duration-300;
+  @apply py-3 px-7 rounded-lg transition-all ease-in-out duration-300;
 }
 
-button:hover {
-  @apply scale-105 drop-shadow-2xl;
+form {
+  @apply flex flex-col p-10 bg-slate-50 shadow-lg shadow-black/30;
+}
+form h1 {
+  @apply text-center mb-5 text-xl font-semibold text-gray-800;
+}
+form button {
+  @apply mt-5;
+}
+form small {
+  @apply mt-1 text-end text-gray-600;
+}
+.form-item {
+  @apply flex flex-col my-2 gap-2 text-base text-gray-600;
+}
+.form-item input {
+  @apply py-1 px-2 border-solid border-2 text-gray-800 border-gray-600 outline-none;
+}
+.form-item input:focus {
+  @apply border-black;
 }
