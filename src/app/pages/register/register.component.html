@@ -1,0 +1,55 @@
+<div class="flex flex-grow justify-center items-center bg-slate-50">
+  <!-- Toaster -->
+  <app-loader *ngIf="isLoading"></app-loader>
+
+  <!-- Form -->
+  <form class="w-full max-w-[400px]" (ngSubmit)="onSubmit(f)" #f="ngForm" *ngIf="!isLoading">
+    <h1>Create an account</h1>
+
+    <!-- username -->
+    <div class="form-item">
+      <label for="username">Username:</label>
+      <span class="error" *ngIf="username.touched && (username.value.length < 8 || username.value.length > 20)">
+        Username must be 8 - 20 characters
+      </span>
+      <input type="text" name="username" id="username" placeholder="(between 8 - 20 characters)" ngModel required
+        #username="ngModel">
+    </div>
+
+    <!-- email -->
+    <div class="form-item">
+      <label for="email">Email:</label>
+      <span class="error" *ngIf="email.touched && !emailRegEx.test(email.value)">
+        Please enter a valid email
+      </span>
+      <input type="email" name="email" id="email" ngModel required #email="ngModel">
+    </div>
+
+    <!-- password -->
+    <div class="form-item">
+      <label for="password">Password:</label>
+      <span class="error" *ngIf="password.touched && password.value.length < 8">
+        Password must be min 8 characters
+      </span>
+      <span class="error" *ngIf="password.touched && !passwordRegEx.test(password.value) && password.value.length >= 8">
+        Password must have 1 number and 1 symbol (!@#$%^&+=)
+      </span>
+      <input type="password" name="password" id="password" placeholder="(at least 8 characters required)" ngModel
+        required #password="ngModel">
+    </div>
+
+    <!-- confirm password -->
+    <div class="form-item">
+      <label for="confirmPassword">Confirm Password:</label>
+      <span class="error" *ngIf="password.value !== confirmPassword.value && confirmPassword.touched">Please enter
+        matching
+        password</span>
+      <input type="password" name="confirmPassword" id="confirmPassword" ngModel required #confirmPassword="ngModel">
+    </div>
+
+    <!-- submit -->
+    <button class="bg-sky-600 hover:bg-sky-800 disabled:opacity-60 disabled:bg-sky-600" type="submit"
+      [disabled]="!f.valid">Sign Up</button>
+    <small><a routerLink="../login">Already have an account?</a></small>
+  </form>
+</div>
