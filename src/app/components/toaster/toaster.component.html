@@ -1,0 +1,13 @@
+<div class="fixed top-[60px] left-0 w-full max-w-[250px]" *ngIf="errors || success" [@inOutAnimation]>
+  <div class="p-5 bg-red-600" *ngIf="errors">
+    <ul>
+      <li *ngFor="let error of errors | keyvalue">
+        {{error.value}}
+      </li>
+    </ul>
+  </div>
+  <div class="p-5 bg-green-600" *ngIf="success">
+    {{success}}
+  </div>
+  <button class="absolute top-[-2px] right-[10px] p-0 text-xl" (click)="onClick()" type="button">x</button>>
+</div>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { registerUserReq } from '../models/auth';
+import { registerUserReq } from '../../models/auth';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
