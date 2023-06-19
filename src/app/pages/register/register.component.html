@@ -6,45 +6,45 @@
   <form class="w-full max-w-[400px]" (ngSubmit)="onSubmit(f)" #f="ngForm" *ngIf="!isLoading">
     <h1>Create an account</h1>
 
-    <!-- username -->
-    <div class="form-item">
-      <label for="username">Username:</label>
-      <span class="error" *ngIf="username.touched && (username.value.length < 8 || username.value.length > 20)">
-        Username must be 8 - 20 characters
-      </span>
-      <input type="text" name="username" id="username" placeholder="(between 8 - 20 characters)" ngModel required
-        #username="ngModel">
-    </div>
-
     <!-- email -->
     <div class="form-item">
       <label for="email">Email:</label>
-      <span class="error" *ngIf="email.touched && !emailRegEx.test(email.value)">
-        Please enter a valid email
+      <input type="email" name="email" id="email" autocomplete="off" ngModel required
+        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$" #email="ngModel">
+      <span class="error" *ngIf="email.invalid && email.touched">
+        Please enter a valid email.
       </span>
-      <input type="email" name="email" id="email" ngModel required #email="ngModel">
+    </div>
+
+    <!-- username -->
+    <div class="form-item">
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username" placeholder="(between 8 - 20 characters)" autocomplete="off"
+        ngModel required minlength="8" maxlength="20" #username="ngModel">
+      <span class="error" *ngIf="username.invalid && username.touched">
+        Must have between 8 - 20 characters.
+      </span>
     </div>
 
     <!-- password -->
     <div class="form-item">
       <label for="password">Password:</label>
-      <span class="error" *ngIf="password.touched && password.value.length < 8">
-        Password must be min 8 characters
+      <input type="password" name="password" id="password" placeholder="(at least 8 characters required)"
+        autocomplete="new-password" ngModel required minlength="8" pattern="^(?=.*[0-9])(?=.*[!@#$%^&+=])(?=\S+$).{8,}$"
+        #password="ngModel">
+      <span class="error" *ngIf="password.invalid && password.touched">
+        Must have at least 8 characters, 1 number, and 1 symbol (!@#$%^&+=).
       </span>
-      <span class="error" *ngIf="password.touched && !passwordRegEx.test(password.value) && password.value.length >= 8">
-        Password must have 1 number and 1 symbol (!@#$%^&+=)
-      </span>
-      <input type="password" name="password" id="password" placeholder="(at least 8 characters required)" ngModel
-        required #password="ngModel">
     </div>
 
     <!-- confirm password -->
     <div class="form-item">
       <label for="confirmPassword">Confirm Password:</label>
-      <span class="error" *ngIf="password.value !== confirmPassword.value && confirmPassword.touched">Please enter
-        matching
-        password</span>
-      <input type="password" name="confirmPassword" id="confirmPassword" ngModel required #confirmPassword="ngModel">
+      <input type="password" name="confirmPassword" id="confirmPassword" autocomplete="new-password" ngModel required
+        #confirmPassword="ngModel">
+      <span class="error" *ngIf="confirmPassword.invalid && confirmPassword.touched">
+        Confirm password required.
+      </span>
     </div>
 
     <!-- submit -->
