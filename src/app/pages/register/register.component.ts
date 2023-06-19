@@ -19,8 +19,6 @@ export class RegisterComponent {
     password: '',
     confirmPassword: '',
   };
-  emailRegEx = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$');
-  passwordRegEx = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&+=])(?=\\S+$).{0,}$');
   isLoading = false;
 
   constructor(
@@ -51,19 +49,19 @@ export class RegisterComponent {
     this.user.confirmPassword = form.value.confirmPassword;
 
     // make request
-    this.authService.signup(this.user).subscribe({
+    this.authService.register(this.user).subscribe({
       next: () => {
         // render success toaster
-        this.toaster.success('You have successfully registerd.');
+        this.toaster.success('You have successfully registered account.');
         // navigate to login page
         this.router.navigate(['../login']);
         // remove loading
         this.isLoading = false;
       },
-      error: (error) => {
-        delete error.error['timestamp'];
+      error: (errorRes) => {
+        delete errorRes.error['timestamp'];
         // render error toaster
-        this.toaster.error(error.error);
+        this.toaster.error(errorRes.error);
         // remove loading
         this.isLoading = false;
       },

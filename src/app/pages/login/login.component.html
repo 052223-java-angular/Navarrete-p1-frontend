@@ -1,1 +1,34 @@
-<p>login works!</p>
+<div class="flex flex-grow justify-center items-center bg-slate-50">
+  <!-- Toaster -->
+  <app-loader *ngIf="isLoading"></app-loader>
+
+  <!-- Form -->
+  <form class="w-full max-w-[400px]" (ngSubmit)="onSubmit(f)" #f="ngForm" *ngIf="!isLoading">
+    <h1>Login to existing account</h1>
+
+    <!-- username -->
+    <div class="form-item">
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username" placeholder="(between 8 - 20 characters)" autocomplete="username"
+        ngModel required #username="ngModel">
+      <span class="error" *ngIf="username.invalid && username.touched">
+        Username required.
+      </span>
+    </div>
+
+    <!-- password -->
+    <div class="form-item">
+      <label for="password">Password:</label>
+      <input type="password" name="password" id="password" placeholder="(at least 8 characters required)"
+        autocomplete="current-password" ngModel required #password="ngModel">
+      <span class="error" *ngIf="password.invalid && password.touched">
+        Password required.
+      </span>
+    </div>
+
+    <!-- submit -->
+    <button class="bg-sky-600 hover:bg-sky-800 disabled:opacity-60 disabled:bg-sky-600" type="submit"
+      [disabled]="!f.valid">Sign in</button>
+    <small><a routerLink="../register">Need an account?</a></small>
+  </form>
+</div>

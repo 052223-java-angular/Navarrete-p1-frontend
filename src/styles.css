@@ -37,7 +37,7 @@ form small {
   @apply mt-1 text-end text-gray-600;
 }
 .form-item {
-  @apply flex flex-col my-2 gap-2 text-base text-gray-600;
+  @apply flex flex-col my-2 gap-[2px] text-base text-gray-600;
 }
 .form-item input {
   @apply py-1 px-2 border-solid border-2 text-gray-800 border-gray-600 outline-none;
@@ -46,5 +46,8 @@ form small {
   @apply border-black;
 }
 .form-item .error {
-  @apply text-sm text-red-600;
+  @apply text-[13.5px] text-red-600;
+}
+.form-item input.ng-invalid.ng-touched {
+  @apply border-red-600;
 }
