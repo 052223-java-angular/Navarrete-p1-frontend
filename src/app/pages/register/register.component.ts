@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 
-import { registerUserReq } from 'src/app/models/auth';
+import { registerUserReq } from 'src/app/models/auth/register';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
 @Component({

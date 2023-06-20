@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { loginUserReq } from 'src/app/models/auth';
+import { loginUserReq } from 'src/app/models/auth/login';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
