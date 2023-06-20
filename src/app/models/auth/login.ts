@@ -1,13 +1,5 @@
 /* ------------------- res modesl ------------------- */
-export interface loginUserReq {
+export interface LoginUserReq {
   username: string;
   password: string;
-}
-
-/* ------------------- res modesl ------------------- */
-export interface loginUserRes {
-  id: string;
-  username: string;
-  role: string;
-  token: string;
 }
