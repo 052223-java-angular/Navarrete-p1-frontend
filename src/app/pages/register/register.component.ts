@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 
-import { registerUserReq } from 'src/app/models/auth';
+import { RegisterUserReq } from 'src/app/models/auth/register';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
 @Component({
@@ -13,7 +13,7 @@ import { ToasterService } from 'src/app/services/toaster/toaster.service';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  user: registerUserReq = {
+  user: RegisterUserReq = {
     username: '',
     email: '',
     password: '',

@@ -41,6 +41,8 @@ export class ToasterComponent {
     // clear previous timer
     if (this.timeout) {
       clearTimeout(this.timeout);
+      this.errors = null;
+      this.success = null;
     }
 
     // display success toaster
@@ -56,6 +58,8 @@ export class ToasterComponent {
     // clear previous timer
     if (this.timeout) {
       clearTimeout(this.timeout);
+      this.errors = null;
+      this.success = null;
     }
 
     // display error toaster

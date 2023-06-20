@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Auth } from 'src/app/models/auth/auth';
 
-import { loginUserReq } from 'src/app/models/auth';
+import { LoginUserReq } from 'src/app/models/auth/login';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
@@ -13,7 +14,7 @@ import { ToasterService } from 'src/app/services/toaster/toaster.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  user: loginUserReq = {
+  user: LoginUserReq = {
     username: '',
     password: '',
   };
@@ -40,7 +41,7 @@ export class LoginComponent {
 
     // make request
     this.authService.login(this.user).subscribe({
-      next: (resData) => {
+      next: (resData: Auth) => {
         // set local storage
         localStorage.setItem('user', JSON.stringify(resData));
         // render success toaster
@@ -51,6 +52,7 @@ export class LoginComponent {
         this.isLoading = false;
       },
       error: (errorRes) => {
+        console.log(errorRes);
         delete errorRes.error['timestamp'];
         // render error toaster
         this.toaster.error(errorRes.error);
