@@ -28,20 +28,18 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    const token: string | null = this.getToken();
-    if (typeof token === 'string') {
-      return !this.jwtHelper.isTokenExpired(token);
-    } else {
-      return false;
-    }
+    return !this.jwtHelper.isTokenExpired(this.getToken());
   }
 
-  getToken(): string | null {
+  getToken(): string {
     const authString: string | null = localStorage.getItem('user') || null;
     if (typeof authString === 'string') {
       const auth: Auth = JSON.parse(authString);
+      if (typeof auth.token === 'undefined') {
+        return '';
+      }
       return auth.token;
     }
-    return null;
+    return '';
   }
 }

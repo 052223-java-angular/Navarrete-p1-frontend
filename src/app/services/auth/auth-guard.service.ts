@@ -25,7 +25,7 @@ export class AuthGuardService {
   ): boolean | Promise<boolean> | Observable<boolean> => {
     if (!this.authService.isLoggedIn()) {
       this.router.navigateByUrl(`login`);
-      this.toaster.error({ message: 'User is not logged inx.' });
+      this.toaster.error({ message: 'User is not authenticated.' });
       return false;
     }
     return true;

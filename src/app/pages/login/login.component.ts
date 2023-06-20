@@ -52,7 +52,6 @@ export class LoginComponent {
         this.isLoading = false;
       },
       error: (errorRes) => {
-        console.log(errorRes);
         delete errorRes.error['timestamp'];
         // render error toaster
         this.toaster.error(errorRes.error);
