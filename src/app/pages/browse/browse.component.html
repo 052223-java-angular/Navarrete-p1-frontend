@@ -11,18 +11,43 @@
   </div>
 
   <!-- Movie list -->
-  <div class="mt-10 px-5" *ngIf="!isLoading">
+  <div class="my-10 px-5" *ngIf="!isLoading">
     <h2 class="mb-5 font-semibold text-xl text-slate-950">Popular Movies</h2>
-    <ul class="grid gap-5" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
-      <li class="text-slate-950" *ngFor="let movie of movies">
-        <div class="relative rounded-xl overflow-hidden">
-          <div class="absolute top-0 right-0 z-10">+</div>
-          <div class="absolute bottom-0 left-0 z-10">{{movie.totalRating}}</div>
-          <img src="{{imageBaseUrl}}{{movie.poster_path}}" alt="{{movie.title}} poster">
+    <ul
+      class="grid gap-5 grid-cols-[repeat(auto-fill,_minmax(125px,_1fr))] sm:grid-cols-[repeat(auto-fill,_minmax(150px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))]">
+      <!-- Movie card -->
+      <li *ngFor="let movie of movies | paginate: {id: 'server', itemsPerPage: 20, currentPage: p, totalItems: total}">
+        <!-- Image card -->
+        <div class="relative">
+          <!-- Image container-->
+          <div class="rounded-xl overflow-hidden">
+            <img src="{{imageBaseUrl}}{{movie.poster_path}}" alt="{{movie.title}} poster">
+          </div>
+          <!-- Icons -->
+          <div class="flex flex-col items-center absolute top-3 right-2 z-10">
+            <fa-icon
+              class="text-2xl text-white/80 cursor-pointer transition-all ease-in-out duration-300 hover:text-blue-500"
+              [icon]="faSquarePlus"></fa-icon>
+            <fa-icon
+              class="text-2xl text-yellow-400 cursor-pointer transition-all ease-in-out duration-300 hover:text-yellow-600"
+              [icon]="faStar"></fa-icon>
+          </div>
+          <!-- Movie rating-->
+          <div
+            class="flex justify-center items-center absolute -bottom-2 -left-2 w-11 h-11 rounded-full border-solid border-2  bg-purple-900 text-sm">
+            <div *ngIf="movie.totalVotes == 0">N/A</div>
+            <div *ngIf="movie.totalVotes > 0">{{movie.totalRating}}</div>
+          </div>
         </div>
-        <p class="mt-3 font-semibold text-base">{{movie.title}}</p>
+        <!-- Movie details -->
+        <p class="mt-3 font-semibold text-base text-slate-950">{{movie.title}}</p>
         <p class="text-sm text-slate-700">{{movie.release_date}}</p>
       </li>
     </ul>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center items-center mt-5 mb-10" *ngIf="!isLoading">
+    <pagination-controls class="pagination" (pageChange)="loadMovies($event)" id="server"></pagination-controls>
   </div>
 </div>

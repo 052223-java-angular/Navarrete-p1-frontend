@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject, forkJoin, of, switchMap } from 'rxjs';
 import { DBMovie, Movie, TMBDMovie } from 'src/app/models/movie/movie';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -14,13 +14,16 @@ export class MovieService {
   externalApiAuth: string = environment.externalAPiAuth;
   // subjects
   moviesSub: Subject<Array<Movie>> = new Subject<Array<Movie>>();
-  // properties
+  // fields
   movies: Array<Movie> = [];
+  totalPages: number = 500;
+  MoviesPerPage: number = 20;
+  totalMovies: number = this.totalPages * this.MoviesPerPage;
 
   constructor(private http: HttpClient) {}
 
   // get movies from db and external api
-  getMovies(): Subject<Array<Movie>> {
+  getMovies(page: number): Subject<Array<Movie>> {
     // request movie data from external api
     this.http
       .get<{ results: Array<TMBDMovie> }>(
@@ -33,7 +36,7 @@ export class MovieService {
             .set('include_adult', 'false')
             .set('include_video', 'false')
             .set('language', 'en-US')
-            .set('page', '1')
+            .set('page', page + '')
             .set('sort_by', 'popularity.desc'),
         }
       )
