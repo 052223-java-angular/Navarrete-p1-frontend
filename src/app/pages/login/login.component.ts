@@ -57,6 +57,7 @@ export class LoginComponent {
         this.toaster.error(errorRes.error);
         // remove loading
         this.isLoading = false;
+        console.log(errorRes.error);
       },
     });
 

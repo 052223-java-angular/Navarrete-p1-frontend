@@ -21,9 +21,16 @@ export class AuthInterceptorService implements HttpInterceptor {
       return next.handle(req);
     }
 
-    // attach token to request
+    if (req.headers.get('skip')) {
+      const modifiedHeader = req.headers.delete('skip');
+      return next.handle(req.clone({ headers: modifiedHeader }));
+    }
+
+    // attach token and user id to request
     const modifiedReq = req.clone({
-      headers: req.headers.set('auth_token', this.authService.getToken()),
+      headers: req.headers
+        .set('auth_token', this.authService.getToken())
+        .set('userId', this.authService.getUserId()),
     });
     return next.handle(modifiedReq);
   }

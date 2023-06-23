@@ -1,1 +1,28 @@
-<p>Welcome </p>
+<div class="mx-auto w-full max-w-screen-xl">
+  <!-- Banner -->
+  <div class="p-10 w-full bg-sky-700">
+    <h1 class="pt-5 text-3xl">Welcome, {{username}}.</h1>
+    <p class="text-2xl">Millions of movies to discover. Explore now.</p>
+  </div>
+
+  <!-- Loader -->
+  <div class="flex justify-center items-center w-full h-60" *ngIf="isLoading">
+    <app-loader></app-loader>
+  </div>
+
+  <!-- Movie list -->
+  <div class="mt-10 px-5" *ngIf="!isLoading">
+    <h2 class="mb-5 font-semibold text-xl text-slate-950">Popular Movies</h2>
+    <ul class="grid gap-5" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+      <li class="text-slate-950" *ngFor="let movie of movies">
+        <div class="relative rounded-xl overflow-hidden">
+          <div class="absolute top-0 right-0 z-10">+</div>
+          <div class="absolute bottom-0 left-0 z-10">{{movie.totalRating}}</div>
+          <img src="{{imageBaseUrl}}{{movie.poster_path}}" alt="{{movie.title}} poster">
+        </div>
+        <p class="mt-3 font-semibold text-base">{{movie.title}}</p>
+        <p class="text-sm text-slate-700">{{movie.release_date}}</p>
+      </li>
+    </ul>
+  </div>
+</div>

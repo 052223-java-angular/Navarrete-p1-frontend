@@ -32,13 +32,25 @@ export class AuthService {
   }
 
   getToken(): string {
+    return this.extractUserData('token');
+  }
+
+  getUserId(): string {
+    return this.extractUserData('id');
+  }
+
+  getUsername(): string {
+    return this.extractUserData('username');
+  }
+
+  private extractUserData(target: keyof Auth): string {
     const authString: string | null = localStorage.getItem('user') || null;
     if (typeof authString === 'string') {
       const auth: Auth = JSON.parse(authString);
-      if (typeof auth.token === 'undefined') {
+      if (typeof auth[`${target}`] === 'undefined') {
         return '';
       }
-      return auth.token;
+      return auth[`${target}`];
     }
     return '';
   }
