@@ -1,0 +1,9 @@
+.pagination ::ng-deep .ngx-pagination .current {
+  @apply bg-emerald-500;
+}
+.pagination ::ng-deep nav {
+  @apply bg-white;
+}
+.pagination ::ng-deep ul {
+  @apply m-0;
+}
