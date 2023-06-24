@@ -2,7 +2,7 @@
   @apply bg-emerald-500;
 }
 .pagination ::ng-deep nav {
-  @apply bg-white;
+  @apply p-0 bg-white;
 }
 .pagination ::ng-deep ul {
   @apply m-0;

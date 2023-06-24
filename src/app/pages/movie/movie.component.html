@@ -1,0 +1,65 @@
+<!-- Loader -->
+<div *ngIf="isLoading">
+  <app-loader></app-loader>
+</div>
+
+<div *ngIf="!isLoading">
+  <div class="flex justify-center relative pt-10 pb-14">
+    <!-- Backdrop -->
+    <img class="absolute top-0 left-0 w-full h-full object-cover -z-20 backdrop-brightness-50"
+      src="{{imageBaseUrl}}{{movie.backdrop_path}}" alt="">
+    <!-- Filter -->
+    <div class="absolute top-0 left-0 w-full h-full bg-black -z-10 opacity-60"></div>
+    <div class="flex justify-center items-center w-full max-w-screen-lg gap-10">
+      <!-- Image-->
+      <div class="min-w-[300px] h-[450px] rounded-md overflow-hidden">
+        <img class="w-full h-full object-cover" src="{{imageBaseUrl}}{{movie.poster_path}}" alt="">
+      </div>
+      <!-- Movie details -->
+      <div class="flex flex-col gap-5">
+        <div class="text-base">
+          <h1 class="text-3xl">{{movie.title}}</h1>
+          <div class="flex gap-3">
+            <p>{{movie.release_date}}</p>
+            -
+            <ul class="flex">
+              <li *ngFor="let genre of movie.genres; let last=last">
+                <span>{{genre.name}}</span>
+                <span class="mr-1" *ngIf="!last">,</span>
+              </li>
+            </ul>
+            -
+            <p>{{movie.runtime}}min</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3">
+            <div
+              class="flex justify-center items-center w-14 h-14 rounded-full border-solid border-2 bg-purple-900 text-sm"
+              *ngIf="movie.totalRating == 0">
+              N/A
+            </div>
+            <div
+              class="flex justify-center items-center w-14 h-14 rounded-full border-solid border-2 bg-purple-900 text-sm"
+              *ngIf="movie.totalRating > 0">
+              {{movie.totalRating}}
+            </div>
+            <p class="font-bold">User<br>Score</p>
+          </div>
+          <!-- Icons -->
+          <div class="flex justify-center items-center w-11 h-11 rounded-full bg-cyan-900 text-sm">
+            <fa-icon class="text-base cursor-pointer transition-all ease-in-out duration-300 hover:text-sky-500"
+              [icon]="faPlus"></fa-icon>
+          </div>
+          <div class="flex justify-center items-center w-11 h-11 rounded-full bg-cyan-900 text-sm">
+            <fa-icon class="text-base cursor-pointer transition-all ease-in-out duration-300 hover:text-yellow-500"
+              [icon]="faStar"></fa-icon>
+          </div>
+        </div>
+        <p class="text-gray-300"><i>{{movie.tagline}}</i></p>
+        <h2 class="font-bold text-xl">Overview</h2>
+        <p>{{movie.overview}}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject, forkJoin, of, switchMap } from 'rxjs';
+import { Subject, forkJoin, of, switchMap, tap } from 'rxjs';
 import { DBMovie, Movie, TMBDMovie } from 'src/app/models/movie/movie';
 import { environment } from 'src/environments/environment.development';
 
@@ -13,9 +13,11 @@ export class MovieService {
   externalApiUrl: string = environment.externalApiUrl;
   externalApiAuth: string = environment.externalAPiAuth;
   // subjects
-  moviesSub: Subject<Array<Movie>> = new Subject<Array<Movie>>();
+  moviesSubject: Subject<Array<Movie>> = new Subject<Array<Movie>>();
+  movieSubject: Subject<Movie> = new Subject<Movie>();
   // fields
-  movies: Array<Movie> = [];
+  movies!: Array<Movie>;
+  movie!: Movie;
   totalPages: number = 500;
   MoviesPerPage: number = 20;
   totalMovies: number = this.totalPages * this.MoviesPerPage;
@@ -96,14 +98,55 @@ export class MovieService {
           const merged = Array.from(map.values());
 
           // update movie subject
-          this.moviesSub.next(merged);
+          this.moviesSubject.next(merged);
         },
         error: (errorRes) => {
           console.log(errorRes.error);
-          this.moviesSub.next(this.movies);
+          this.moviesSubject.next(this.movies);
         },
       });
 
-    return this.moviesSub;
+    return this.moviesSubject;
+  }
+
+  getMovie(id: number): Subject<Movie> {
+    // request movie data from external api
+    this.http
+      .get<TMBDMovie>(`${this.externalApiUrl}/movie/${id}`, {
+        headers: new HttpHeaders()
+          .set('Authorization', this.externalApiAuth)
+          .set('skip', 'true'),
+        params: new HttpParams().set('language', 'en-US'),
+      })
+      .pipe(
+        switchMap((externalApiRes) => {
+          const { vote_average, vote_count, ...restTMBD } = externalApiRes;
+          this.movie = { ...restTMBD, totalRating: 0, totalVotes: 0 };
+          // request movie data from db
+          const dbRes = this.http.get<Array<DBMovie>>(
+            `${this.baseUrl}/movies`,
+            {
+              params: { ids: [id] },
+            }
+          );
+          // join both sets of data to combine into one array of movies
+          return forkJoin([of(externalApiRes), dbRes]);
+        })
+      )
+      .subscribe({
+        next: (resData) => {
+          // combine external api and db movie data
+          const { vote_average, vote_count, ...restTMBD } = resData[0];
+          const { id, ...restDB } = resData[1][0];
+
+          this.movieSubject.next({ ...restTMBD, ...restDB });
+        },
+        error: (errorRes) => {
+          console.log(errorRes.error);
+          this.movieSubject.next(this.movie);
+        },
+      });
+
+    return this.movieSubject;
   }
 }

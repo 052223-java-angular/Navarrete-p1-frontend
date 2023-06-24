@@ -17,6 +17,7 @@ import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
 import { AuthInterceptorService } from './services/auth/auth-interceptor.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { MovieComponent } from './pages/movie/movie.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ToasterComponent,
     LoaderComponent,
     BrowseComponent,
+    MovieComponent,
   ],
   imports: [
     BrowserModule,

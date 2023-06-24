@@ -20,7 +20,7 @@
         <!-- Image card -->
         <div class="relative">
           <!-- Image container-->
-          <div class="rounded-xl overflow-hidden">
+          <div class="rounded-xl overflow-hidden cursor-pointer" routerLink="/browse/movie/{{movie.id}}">
             <img src="{{imageBaseUrl}}{{movie.poster_path}}" alt="{{movie.title}} poster">
           </div>
           <!-- Icons -->
@@ -48,6 +48,9 @@
 
   <!-- Pagination -->
   <div class="flex justify-center items-center mt-5 mb-10" *ngIf="!isLoading">
-    <pagination-controls class="pagination" (pageChange)="loadMovies($event)" id="server"></pagination-controls>
+    <pagination-controls class="pagination" (pageChange)="loadMovies($event)" id="server" [maxSize]="5" previousLabel=""
+      nextLabel=""></pagination-controls>
   </div>
+
+  <router-outlet></router-outlet>
 </div>

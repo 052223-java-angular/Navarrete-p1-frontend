@@ -1,30 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Movie } from 'src/app/models/movie/movie';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MovieService } from 'src/app/services/movie/movie.service';
 
 // icons
-import { faSquarePlus } from '@fortawesome/free-solid-svg-icons';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSquarePlus,
+  faStar,
+  faAnglesLeft,
+  faAnglesRight,
+} from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-browse',
   templateUrl: './browse.component.html',
   styleUrls: ['./browse.component.css'],
 })
-export class BrowseComponent implements OnInit {
+export class BrowseComponent implements OnInit, OnDestroy {
   username = this.authService.getUsername();
   imageBaseUrl = 'https://image.tmdb.org/t/p/original/';
   isLoading = false;
 
   // pagination
-  movies: Array<Movie> = [];
+  movies!: Array<Movie>;
   p: number = 1;
   total: number = this.movieService.totalMovies;
 
   // icons
   faSquarePlus = faSquarePlus;
   faStar = faStar;
+  faAnglesLeft = faAnglesLeft;
+  faAnglesRight = faAnglesRight;
+
+  // subscription
+  moviesSubscription: Subscription = new Subscription();
 
   constructor(
     private movieService: MovieService,
@@ -33,13 +43,17 @@ export class BrowseComponent implements OnInit {
 
   ngOnInit(): void {
     // load movies
-    this.loadMovies(1);
+    this.moviesSubscription = this.loadMovies(1);
   }
 
-  loadMovies(page: number): void {
+  ngOnDestroy(): void {
+    this.moviesSubscription.unsubscribe();
+  }
+
+  loadMovies(page: number): Subscription {
     this.isLoading = true;
 
-    this.movieService.getMovies(page).subscribe({
+    return this.movieService.getMovies(page).subscribe({
       next: (resData) => {
         this.isLoading = false;
         this.p = +page;
