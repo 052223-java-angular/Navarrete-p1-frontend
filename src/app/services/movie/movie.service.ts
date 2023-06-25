@@ -1,6 +1,15 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject, forkJoin, of, switchMap, tap } from 'rxjs';
+import {
+  Subject,
+  forkJoin,
+  of,
+  switchMap,
+  catchError,
+  Observable,
+  throwError,
+  tap,
+} from 'rxjs';
 import { DBMovie, Movie, TMBDMovie } from 'src/app/models/movie/movie';
 import { environment } from 'src/environments/environment.development';
 
@@ -15,6 +24,9 @@ export class MovieService {
   // subjects
   moviesSubject: Subject<Array<Movie>> = new Subject<Array<Movie>>();
   movieSubject: Subject<Movie> = new Subject<Movie>();
+  movieRecommendationSubject: Subject<Array<Movie>> = new Subject<
+    Array<Movie>
+  >();
   // fields
   movies!: Array<Movie>;
   movie!: Movie;
@@ -57,8 +69,7 @@ export class MovieService {
             const { vote_count, vote_average, ...rest } = movieRes;
 
             // store data in movie
-            let tmbdMovie = rest as TMBDMovie;
-            movie = { ...tmbdMovie, totalRating: 0, totalVotes: 0 };
+            movie = { ...rest, totalRating: 0, totalVotes: 0 };
 
             // push movie and ids
             movies.push(movie);
@@ -80,25 +91,10 @@ export class MovieService {
       )
       .subscribe({
         next: (resData) => {
-          // combine external api and db movie data
-          const tmbdMovies = resData[0].results;
-          const dbMovies = resData[1];
-
-          // combine
-          const map = new Map();
-          tmbdMovies.forEach((item) => {
-            const { vote_count, vote_average, ...rest } = item;
-            map.set(item.id, { totalRating: 0, totalVotes: 0, ...rest });
-          });
-          dbMovies.forEach((item) => {
-            const { id, ...restDB } = item;
-            const { totalRating, totalVotes, ...restTMBD } = map.get(+id);
-            map.set(+id, { ...restTMBD, ...restDB });
-          });
-          const merged = Array.from(map.values());
-
           // update movie subject
-          this.moviesSubject.next(merged);
+          this.moviesSubject.next(
+            this.combineMovies(resData[0].results, resData[1])
+          );
         },
         error: (errorRes) => {
           console.log(errorRes.error);
@@ -148,5 +144,103 @@ export class MovieService {
       });
 
     return this.movieSubject;
+  }
+
+  getRecommendations(movieId: number): Subject<Array<Movie>> {
+    // request movies from db
+    this.http
+      .get<Array<DBMovie>>(
+        `${this.baseUrl}/movies/${movieId}/recommendation?amount=10`
+      )
+      .pipe(
+        catchError((err): Observable<any> => {
+          // request external api data
+          this.http
+            .get<{ results: Array<TMBDMovie> }>(
+              `${this.externalApiUrl}/movie/${movieId}/recommendations`,
+              {
+                headers: new HttpHeaders()
+                  .set('Authorization', this.externalApiAuth)
+                  .set('skip', 'true'),
+                params: new HttpParams()
+                  .set('language', 'en-US')
+                  .set('page', '1'),
+              }
+            )
+            .subscribe({
+              next: (resData) => {
+                const movieArr: Array<Movie> = [];
+                // populate movieArr
+                for (let tmbdMovie of resData.results) {
+                  const { vote_average, vote_count, ...rest } = tmbdMovie;
+                  movieArr.push({
+                    ...rest,
+                    totalRating: 0,
+                    totalVotes: 0,
+                  });
+                }
+
+                this.movieRecommendationSubject.next(movieArr);
+              },
+            });
+
+          return throwError(() => err);
+        })
+      )
+      .pipe(
+        switchMap((dbRes: Array<DBMovie>) => {
+          const tmbdMovies = forkJoin(
+            dbRes.map((dbMovie) =>
+              this.http.get<TMBDMovie>(
+                `${this.externalApiUrl}/movie/${dbMovie.id}`,
+                {
+                  headers: new HttpHeaders()
+                    .set('Authorization', this.externalApiAuth)
+                    .set('skip', 'true'),
+                  params: new HttpParams().set('language', 'en-US'),
+                }
+              )
+            )
+          ).pipe(
+            tap((res) => {
+              return res;
+            })
+          );
+
+          return forkJoin([tmbdMovies, of(dbRes)]);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          console.log('success');
+          // update movie recommendation subject
+          this.movieRecommendationSubject.next(
+            this.combineMovies(res[0], res[1])
+          );
+        },
+        error: (error) => {
+          console.log(error.error);
+        },
+      });
+
+    return this.movieRecommendationSubject;
+  }
+
+  private combineMovies(
+    tmbdMovies: Array<TMBDMovie>,
+    dbMovies: Array<DBMovie>
+  ): Array<Movie> {
+    // combine
+    const map = new Map();
+    tmbdMovies.forEach((item) => {
+      const { vote_count, vote_average, ...rest } = item;
+      map.set(item.id, { totalRating: 0, totalVotes: 0, ...rest });
+    });
+    dbMovies.forEach((item) => {
+      const { id, ...restDB } = item;
+      const { totalRating, totalVotes, ...restTMBD } = map.get(+id);
+      map.set(+id, { ...restTMBD, ...restDB });
+    });
+    return Array.from(map.values());
   }
 }

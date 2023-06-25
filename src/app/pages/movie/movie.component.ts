@@ -18,6 +18,7 @@ export class MovieComponent implements OnInit, OnDestroy {
 
   // subscription
   movieSubscription: Subscription = new Subscription();
+  recommendationSubscription: Subscription = new Subscription();
 
   // icons
   faPlus = faPlus;
@@ -30,10 +31,14 @@ export class MovieComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.movieSubscription = this.getMovie(+(this.id as string));
+    this.recommendationSubscription = this.getRecommendations(
+      +(this.id as string)
+    );
   }
 
   ngOnDestroy(): void {
     this.movieSubscription.unsubscribe();
+    this.recommendationSubscription.unsubscribe();
   }
 
   getMovie(id: number): Subscription {
@@ -48,6 +53,17 @@ export class MovieComponent implements OnInit, OnDestroy {
       error: (errorRes) => {
         this.isLoading = false;
         console.log(errorRes);
+      },
+    });
+  }
+
+  getRecommendations(id: number): Subscription {
+    return this.movieService.getRecommendations(id).subscribe({
+      next: (resData) => {
+        console.log(resData);
+      },
+      error: (errorRes) => {
+        console.log(errorRes``);
       },
     });
   }
