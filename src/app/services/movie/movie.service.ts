@@ -9,6 +9,7 @@ import {
   Observable,
   throwError,
   tap,
+  map,
 } from 'rxjs';
 import { DBMovie, Movie, TMBDMovie } from 'src/app/models/movie/movie';
 import { environment } from 'src/environments/environment.development';
@@ -148,7 +149,7 @@ export class MovieService {
 
   getRecommendations(movieId: number): Subject<Array<Movie>> {
     // request movies from db
-    this.http
+    const movies = this.http
       .get<Array<DBMovie>>(
         `${this.baseUrl}/movies/${movieId}/recommendation?amount=10`
       )
@@ -208,15 +209,67 @@ export class MovieService {
           );
 
           return forkJoin([tmbdMovies, of(dbRes)]);
+        }),
+        map((res) => {
+          return this.combineMovies(res[0], res[1]);
+        })
+      );
+
+    const moreMovies = movies.pipe(
+      switchMap((res) => {
+        return this.http
+          .get<{ results: Array<TMBDMovie> }>(
+            `${this.externalApiUrl}/movie/${movieId}/recommendations`,
+            {
+              headers: new HttpHeaders()
+                .set('Authorization', this.externalApiAuth)
+                .set('skip', 'true'),
+              params: new HttpParams()
+                .set('language', 'en-US')
+                .set('page', '1'),
+            }
+          )
+          .pipe(
+            map((resData) => {
+              const movies: Array<Movie> = [];
+              // populate movieArr
+              let counter = 11 - length;
+              for (let tmbdMovie of resData.results) {
+                if (counter == 0) {
+                  break;
+                }
+
+                // make sure no duplicates
+                if (res.find((item) => item.id == tmbdMovie.id)) {
+                  continue;
+                }
+
+                const { vote_average, vote_count, ...rest } = tmbdMovie;
+
+                movies.push({
+                  ...rest,
+                  totalRating: 0,
+                  totalVotes: 0,
+                });
+                counter--;
+              }
+              return movies;
+            })
+          );
+      })
+    );
+
+    forkJoin([movies, moreMovies])
+      .pipe(
+        map((res) => {
+          return res[0].concat(res[1]);
         })
       )
+
       .subscribe({
         next: (res) => {
-          console.log('success');
           // update movie recommendation subject
-          this.movieRecommendationSubject.next(
-            this.combineMovies(res[0], res[1])
-          );
+          this.movieRecommendationSubject.next(res);
         },
         error: (error) => {
           console.log(error.error);

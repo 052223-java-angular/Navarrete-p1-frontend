@@ -3,7 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Movie } from 'src/app/models/movie/movie';
 import { MovieService } from 'src/app/services/movie/movie.service';
-import { faPlus, faStar } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlus,
+  faStar,
+  faSquarePlus,
+} from '@fortawesome/free-solid-svg-icons';
+import { OwlOptions } from 'ngx-owl-carousel-o';
 
 @Component({
   selector: 'app-movie',
@@ -12,17 +17,35 @@ import { faPlus, faStar } from '@fortawesome/free-solid-svg-icons';
 })
 export class MovieComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
-  id: string | null = this.activatedRoute.snapshot.paramMap.get('id');
-  imageBaseUrl = 'https://image.tmdb.org/t/p/original/';
+  isRecommendationLoading: boolean = false;
+  isReviewLoading: boolean = false;
+  imageBaseUrl = 'https://image.tmdb.org/t/p';
   movie!: Movie;
+  movies!: Array<Movie>;
 
   // subscription
   movieSubscription: Subscription = new Subscription();
   recommendationSubscription: Subscription = new Subscription();
+  routeSubscription: Subscription = new Subscription();
 
   // icons
   faPlus = faPlus;
   faStar = faStar;
+  faSquarePlus = faSquarePlus;
+
+  // carousel options
+  isDragging = false;
+  customOptions: OwlOptions = {
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: false,
+    navSpeed: 200,
+    navText: ['<<', '>>'],
+    nav: true,
+    autoWidth: true,
+    margin: 20,
+  };
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -30,10 +53,16 @@ export class MovieComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.movieSubscription = this.getMovie(+(this.id as string));
-    this.recommendationSubscription = this.getRecommendations(
-      +(this.id as string)
-    );
+    this.activatedRoute.params.subscribe((routeParams) => {
+      // unsubscribe from prev
+      this.movieSubscription.unsubscribe();
+      this.recommendationSubscription.unsubscribe();
+
+      this.movieSubscription = this.getMovie(+routeParams['id']);
+      this.recommendationSubscription = this.getRecommendations(
+        +routeParams['id']
+      );
+    });
   }
 
   ngOnDestroy(): void {
@@ -48,7 +77,6 @@ export class MovieComponent implements OnInit, OnDestroy {
       next: (resData) => {
         this.isLoading = false;
         this.movie = resData;
-        console.log(resData);
       },
       error: (errorRes) => {
         this.isLoading = false;
@@ -58,13 +86,48 @@ export class MovieComponent implements OnInit, OnDestroy {
   }
 
   getRecommendations(id: number): Subscription {
+    this.isRecommendationLoading = true;
+
     return this.movieService.getRecommendations(id).subscribe({
       next: (resData) => {
-        console.log(resData);
+        this.isRecommendationLoading = false;
+        this.movies = resData;
+        this.createOwlOptions(this.movies.length);
       },
       error: (errorRes) => {
+        this.isRecommendationLoading = false;
         console.log(errorRes``);
       },
     });
+  }
+
+  createOwlOptions(size: number) {
+    this.customOptions.responsive = {
+      0: {
+        loop: size <= 2 ? false : true,
+        items: 2,
+        slideBy: 2,
+      },
+      400: {
+        loop: size <= 3 ? false : true,
+        items: 3,
+        slideBy: 3,
+      },
+      740: {
+        loop: size <= 4 ? false : true,
+        items: 4,
+        slideBy: 4,
+      },
+      940: {
+        loop: size <= 5 ? false : true,
+        items: 5,
+        slideBy: 5,
+      },
+      1140: {
+        loop: size <= 6 ? false : true,
+        items: 6,
+        slideBy: 6,
+      },
+    };
   }
 }

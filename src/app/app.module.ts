@@ -18,6 +18,7 @@ import { AuthInterceptorService } from './services/auth/auth-interceptor.service
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MovieComponent } from './pages/movie/movie.component';
+import { CarouselModule } from 'ngx-owl-carousel-o';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { MovieComponent } from './pages/movie/movie.component';
     BrowserAnimationsModule,
     FontAwesomeModule,
     NgxPaginationModule,
+    CarouselModule,
   ],
   providers: [
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

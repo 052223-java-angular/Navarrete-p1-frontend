@@ -1,0 +1,11 @@
+::ng-deep .owl-prev {
+  @apply !absolute !-left-9;
+}
+::ng-deep .owl-next {
+  @apply !absolute !-right-9;
+}
+
+::ng-deep .owl-prev,
+::ng-deep .owl-next {
+  @apply !flex !justify-center !items-center !top-1/2 !-translate-y-3/4 !m-0 !px-2 !py-10 !text-xl !bg-black/20;
+}

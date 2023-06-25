@@ -21,7 +21,8 @@
         <div class="relative">
           <!-- Image container-->
           <div class="rounded-xl overflow-hidden cursor-pointer" routerLink="/browse/movie/{{movie.id}}">
-            <img src="{{imageBaseUrl}}{{movie.poster_path}}" alt="{{movie.title}} poster">
+            <img class="aspect-[0.667] bg-gray-500" src="{{imageBaseUrl}}{{movie.poster_path}}"
+              alt="{{movie.title}} poster">
           </div>
           <!-- Icons -->
           <div class="flex flex-col items-center absolute top-3 right-2 z-10">

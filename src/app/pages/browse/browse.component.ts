@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 })
 export class BrowseComponent implements OnInit, OnDestroy {
   username = this.authService.getUsername();
-  imageBaseUrl = 'https://image.tmdb.org/t/p/original/';
+  imageBaseUrl = 'https://image.tmdb.org/t/p/w500/';
   isLoading = false;
 
   // pagination
