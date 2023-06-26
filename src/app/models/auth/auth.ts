@@ -3,4 +3,5 @@ export interface Auth {
   username: string;
   role: string;
   token: string;
+  avatar: string;
 }

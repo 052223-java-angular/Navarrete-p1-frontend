@@ -7,7 +7,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { LoginUserReq } from '../../models/auth/login';
 import { RegisterUserReq } from 'src/app/models/auth/register';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { Auth } from 'src/app/models/auth/auth';
 
 @Injectable({
@@ -27,6 +27,10 @@ export class AuthService {
     return this.http.post<Auth>(`${this.apiUrl}/auth/login`, user);
   }
 
+  logout() {
+    localStorage.removeItem('user');
+  }
+
   isLoggedIn(): boolean {
     return !this.jwtHelper.isTokenExpired(this.getToken());
   }
@@ -41,6 +45,10 @@ export class AuthService {
 
   getUsername(): string {
     return this.extractUserData('username');
+  }
+
+  getAvatar(): string {
+    return this.extractUserData('avatar');
   }
 
   private extractUserData(target: keyof Auth): string {

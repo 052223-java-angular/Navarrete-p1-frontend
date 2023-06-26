@@ -29,7 +29,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     // attach token and user id to request
     const modifiedReq = req.clone({
       headers: req.headers
-        .set('auth_token', this.authService.getToken())
+        .set('authToken', this.authService.getToken())
         .set('userId', this.authService.getUserId()),
     });
     return next.handle(modifiedReq);
