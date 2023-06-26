@@ -164,11 +164,11 @@
         (click)="showReviewModal()">Write
         Review</button>
       <p *ngIf="reviews.length == 0">No user reviews...</p>
-      <ul class="flex w-full max-w-screen-xl" *ngIf="reviews.length > 0">
+      <ul class="flex flex-col gap-5 w-full max-w-screen-xl" *ngIf="reviews.length > 0">
         <!-- Review card -->
         <li
           class="flex justify-between items-start gap-5 p-5 w-full bg-amber-50/30 shadow-lg shadow-black/20 rounded-md border-solid border-[1px] border-black/20"
-          *ngFor="let review of reviews | paginate: {itemsPerPage: 1, currentPage: 1, totalItems: reviews.length}">
+          *ngFor="let review of reviews | paginate: {itemsPerPage: 5, currentPage: page, totalItems: reviews.length}">
           <!-- Left -->
           <div class="flex gap-5">
             <!-- Profile avatar -->
@@ -202,13 +202,13 @@
               (click)="deleteReview(review.id, movie.id)">delete</button>
           </div>
         </li>
-      </ul>
-    </div>
 
-    <!-- Pagination -->
-    <div class="flex justify-center items-center mt-5 mb-10" *ngIf="!isReviewLoading && reviews.length > 1">
-      <pagination-controls class="pagination" id="server" [maxSize]="5" previousLabel=""
-        nextLabel=""></pagination-controls>
+        <!-- Pagination -->
+        <div class="flex justify-center items-center mt-10" *ngIf="!isReviewLoading">
+          <pagination-controls class="pagination" [maxSize]="5" previousLabel="" nextLabel=""
+            (pageChange)="page = $event"></pagination-controls>
+        </div>
+      </ul>
     </div>
   </div>
 </div>

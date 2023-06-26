@@ -9,3 +9,13 @@
 ::ng-deep .owl-next {
   @apply !flex !justify-center !items-center !top-1/2 !-translate-y-3/4 !m-0 !px-2 !py-10 !text-xl !bg-black/20;
 }
+
+.pagination ::ng-deep .ngx-pagination .current {
+  @apply bg-emerald-500;
+}
+.pagination ::ng-deep nav {
+  @apply p-0 bg-white;
+}
+.pagination ::ng-deep ul {
+  @apply m-0;
+}

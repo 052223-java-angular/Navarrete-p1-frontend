@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DBMovie, Movie } from 'src/app/models/movie/movie';
@@ -34,7 +34,8 @@ export class MovieComponent implements OnInit, OnDestroy {
   imageBaseUrl = 'https://image.tmdb.org/t/p';
   movie!: Movie;
   movies!: Array<Movie>;
-  reviews!: Array<ReviewRes>;
+  @Input('data') reviews: Array<ReviewRes> = [];
+  page: number = 1;
 
   // subscription
   movieSubscription: Subscription = new Subscription();
@@ -213,8 +214,9 @@ export class MovieComponent implements OnInit, OnDestroy {
       this.reviewService.modifyReview(review).subscribe({
         next: (res) => {
           this.reviews = this.reviews.map((item) => {
-            if ((item.id = this.reviewId)) {
-              return res;
+            if (item.id == res.id) {
+              item.rating = res.rating;
+              item.description = res.description;
             }
             return item;
           });
