@@ -1,0 +1,50 @@
+<div class="flex justify-center items-center flex-grow" *ngIf="isLoading">
+  <app-loader></app-loader>
+</div>
+<div class="h-[calc(100vh-60px-72px)] overflow-auto" *ngIf="!isLoading">
+  <ul class="flex p-5 gap-5 w-full h-full overflow-auto text-slate-950">
+    <li>
+      <form class="w-full max-w-[400px] rounded-xl z-20" (ngSubmit)="createList(f)" #f="ngForm">
+        <h1>Create new list</h1>
+
+        <!-- name -->
+        <div class="form-item">
+          <label for="name">Name:</label>
+          <input type="text" name="name" id="name" ngModel required #name="ngModel">
+          <span class="error" *ngIf="name.invalid && name.touched">
+            Name required.
+          </span>
+        </div>
+
+        <!-- submit -->
+        <button class="bg-emerald-800 hover:bg-emerald-950 disabled:opacity-60 disabled:bg-emerald-800 text-white"
+          type="submit" [disabled]="!f.valid">Create</button>
+      </form>
+    </li>
+
+    <!-- lists -->
+    <li
+      class="w-full min-w-[250px] max-w-[300px] rounded-lg bg-white shadow-lg shadow-black/10 border-solid border-black/10 border-[1px] overflow-auto"
+      *ngFor="let list of lists">
+      <div class="flex justify-end w-full">
+        <button
+          class="ml-auto mt-3 mr-3 py-2 px-4 text-end text-sm cursor-pointer bg-blue-600 text-white hover:bg-blue-800"
+          (click)="activateEditMode(list.id)">Toggle
+          edit</button>
+      </div>
+      <div class="pt-10">
+        <p class="text-center text-red-600 cursor-pointer" *ngIf="isEditing && listEditing == list.id"
+          (click)="deleteMovieList(list.id)">delete</p>
+        <h1 class="flex justify-center items-end pb-5 w-full border-solid border-slate-700 border-b-[3px]">{{list.name}}
+        </h1>
+      </div>
+      <ul class="flex flex-col p-3 gap-3">
+        <li *ngFor="let movie of list.movies">
+          <p class="text-red-600 cursor-pointer" *ngIf="isEditing && listEditing == list.id"
+            (click)="deleteMovieFromList(list.id, movie.id)">delete</p>
+          {{movie.title}}
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

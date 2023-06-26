@@ -6,6 +6,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { BrowseComponent } from './pages/browse/browse.component';
 import { AuthGuard } from './services/auth/auth-guard.service';
 import { MovieComponent } from './pages/movie/movie.component';
+import { ListComponent } from './pages/list/list.component';
 
 const routes: Routes = [
   {
@@ -21,11 +22,15 @@ const routes: Routes = [
     component: RegisterComponent,
   },
   {
+    path: 'lists',
+    component: ListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'browse',
     component: BrowseComponent,
     canActivate: [AuthGuard],
   },
-
   {
     path: 'browse',
     children: [

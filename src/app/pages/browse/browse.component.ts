@@ -11,6 +11,9 @@ import {
   faAnglesRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
+import { List } from 'src/app/models/list/list';
+import { ListService } from 'src/app/services/list/list.service';
+import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
 @Component({
   selector: 'app-browse',
@@ -38,7 +41,9 @@ export class BrowseComponent implements OnInit, OnDestroy {
 
   constructor(
     private movieService: MovieService,
-    private authService: AuthService
+    private authService: AuthService,
+    private listService: ListService,
+    private toaster: ToasterService
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +67,60 @@ export class BrowseComponent implements OnInit, OnDestroy {
       error: (errorRes) => {
         this.isLoading = false;
         console.log(errorRes.error);
+      },
+    });
+  }
+
+  // list modal
+  isListLoading = false;
+  listModalActive = false;
+  activeListItem!: string;
+  movieToAdd!: Movie;
+  lists: Array<List> = [];
+
+  showListModal(movie: Movie) {
+    this.listModalActive = true;
+    this.movieToAdd = movie;
+    this.loadLists();
+  }
+
+  hideListModal() {
+    this.listModalActive = false;
+  }
+
+  loadLists() {
+    this.isListLoading = true;
+
+    this.listService.getLists(this.authService.getUserId()).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.isListLoading = false;
+        this.lists = res;
+      },
+      error: (err) => {
+        this.isListLoading = false;
+        console.log(err);
+      },
+    });
+  }
+
+  activateListItem(id: string) {
+    this.activeListItem = id;
+  }
+
+  addMovieToList(id: string, movie: Movie) {
+    this.isListLoading = true;
+
+    this.listService.addMovieToList(id, movie).subscribe({
+      next: (res) => {
+        this.isListLoading = false;
+        this.toaster.success(`Successfully added movie to ${res.name} list.`);
+      },
+      error: (err) => {
+        this.isListLoading = false;
+        delete err.error['timestamp'];
+        // render error toaster
+        this.toaster.error(err.error);
       },
     });
   }
