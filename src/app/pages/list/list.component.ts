@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { List } from 'src/app/models/list/list';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ListService } from 'src/app/services/list/list.service';
@@ -49,13 +50,36 @@ export class ListComponent implements OnInit {
     });
   }
 
+  createList(form: NgForm) {
+    // don't submit when form is invalid
+    if (form.invalid) {
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.listService.createMovieList(form.value.name).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.lists.push(res);
+        this.toaster.success('Successfully create new movie list.');
+      },
+      error: (err) => {
+        this.isLoading = false;
+        delete err.error['timestamp'];
+        // render error toaster
+        this.toaster.error(err.error);
+      },
+    });
+  }
+
   deleteMovieList(id: string) {
     this.isLoading = true;
 
     this.listService.deleteMovieList(id).subscribe({
       next: () => {
         this.isLoading = false;
-        this.lists.filter((item) => {
+        this.lists = this.lists.filter((item) => {
           return item.id != id;
         });
         this.toaster.success('Successfully deleted movie list.');

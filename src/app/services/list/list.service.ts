@@ -34,6 +34,10 @@ export class ListService {
     return list;
   }
 
+  createMovieList(name: string) {
+    return this.http.post<List>(`${this.baseUrl}/movie-lists`, { name });
+  }
+
   deleteMovieList(id: string) {
     return this.http.delete<void>(`${this.baseUrl}/movie-lists/${id}`);
   }
