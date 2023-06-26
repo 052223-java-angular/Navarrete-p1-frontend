@@ -1,3 +1,32 @@
+<!-- Add to list modal -->
+<div class="flex justify-center items-center fixed top-0 left-0 w-screen h-screen z-50 bg-black/60"
+  *ngIf="listModalActive">
+  <!-- normal bg -->
+  <div class="absolute w-full h-full z-10" (click)="hideListModal()"></div>
+  <!-- Loader -->
+  <div class="flex justify-center items-center w-full h-full" *ngIf="isListLoading"><app-loader></app-loader></div>
+  <!-- lists -->
+  <div class="p-5 w-full max-w-[400px] rounded-xl z-20 bg-white text-slate-950" *ngIf="!isListLoading">
+    <h1 class="pb-5 text-center text-xl">Choose List</h1>
+    <div class="flex flex-col justify-between">
+
+      <ul class="flex flex-col gap-2 h-[300px] overflow-auto" *ngIf="!isListLoading">
+        <li
+          class="p-2 w-full rounded-md text-sm bg-amber-50/20 shadow-md shadow-black/10 cursor-pointer ease-out transition-all hover:-translate-y-1"
+          [ngClass]="{'active-list-item' : activeListItem == list.id}" *ngFor="let list of lists"
+          (click)="activateListItem(list.id)">
+          {{list.name}}
+        </li>
+      </ul>
+      <button class="flex justify-center items-center mt-3 w-full bg-emerald-800 hover:bg-emerald-950 text-white"
+        (click)="addMovieToList(activeListItem, movieToAdd)">Add
+        Movie</button>
+    </div>
+  </div>
+</div>
+
+
+
 <!-- Loader -->
 <div class="flex justify-center items-center w-full h-[200px]" *ngIf="isLoading">
   <app-loader></app-loader>
@@ -92,7 +121,7 @@
           <!-- Icons -->
           <div class="flex justify-center items-center w-11 h-11 rounded-full bg-cyan-900 text-sm">
             <fa-icon class="text-base cursor-pointer transition-all ease-in-out duration-300 hover:text-sky-500 "
-              [icon]="faPlus"></fa-icon>
+              [icon]="faPlus" (click)="showListModal(movie)"></fa-icon>
           </div>
           <div class="flex justify-center items-center w-11 h-11 rounded-full bg-cyan-900 text-sm">
             <fa-icon class="text-base cursor-pointer transition-all ease-in-out duration-300 hover:text-yellow-500"
@@ -131,10 +160,7 @@
               <div class="flex flex-col items-center absolute top-3 right-2 z-10">
                 <fa-icon
                   class="text-2xl text-white/80 cursor-pointer transition-all ease-in-out duration-300 hover:text-blue-500"
-                  [icon]="faSquarePlus"></fa-icon>
-                <fa-icon
-                  class="text-2xl text-yellow-400 cursor-pointer transition-all ease-in-out duration-300 hover:text-yellow-600"
-                  [icon]="faStar"></fa-icon>
+                  [icon]="faSquarePlus" (click)="showListModal(movie)"></fa-icon>
               </div>
               <!-- Movie rating-->
               <div

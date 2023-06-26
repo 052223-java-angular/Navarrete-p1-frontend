@@ -19,6 +19,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MovieComponent } from './pages/movie/movie.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
+import { ListComponent } from './pages/list/list.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
     LoaderComponent,
     BrowseComponent,
     MovieComponent,
+    ListComponent,
   ],
   imports: [
     BrowserModule,

@@ -69,5 +69,8 @@ export interface DBMovie {
   id: number;
   totalRating: number;
   totalVotes: number;
+  title: string;
+  posterPath: string;
+  releaseDate: Date;
   reviews?: Array<ReviewRes>;
 }

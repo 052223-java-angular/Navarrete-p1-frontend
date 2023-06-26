@@ -19,6 +19,8 @@ import {
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { NgForm } from '@angular/forms';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
+import { List } from 'src/app/models/list/list';
+import { ListService } from 'src/app/services/list/list.service';
 
 @Component({
   selector: 'app-movie',
@@ -73,7 +75,8 @@ export class MovieComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private movieService: MovieService,
     private reviewService: ReviewService,
-    private toaster: ToasterService
+    private toaster: ToasterService,
+    private listService: ListService
   ) {}
 
   ngOnInit(): void {
@@ -295,6 +298,60 @@ export class MovieComponent implements OnInit, OnDestroy {
         this.toaster.error(err.error);
         // hide review modal
         console.log(err);
+      },
+    });
+  }
+
+  // list modal
+  isListLoading = false;
+  listModalActive = false;
+  activeListItem!: string;
+  movieToAdd!: Movie;
+  lists: Array<List> = [];
+
+  showListModal(movie: Movie) {
+    this.listModalActive = true;
+    this.movieToAdd = movie;
+    this.loadLists();
+  }
+
+  hideListModal() {
+    this.listModalActive = false;
+  }
+
+  loadLists() {
+    this.isListLoading = true;
+
+    this.listService.getLists(this.authService.getUserId()).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.isListLoading = false;
+        this.lists = res;
+      },
+      error: (err) => {
+        this.isListLoading = false;
+        console.log(err);
+      },
+    });
+  }
+
+  activateListItem(id: string) {
+    this.activeListItem = id;
+  }
+
+  addMovieToList(id: string, movie: Movie) {
+    this.isListLoading = true;
+
+    this.listService.addMovieToList(id, movie).subscribe({
+      next: (res) => {
+        this.isListLoading = false;
+        this.toaster.success(`Successfully added movie to ${res.name} list.`);
+      },
+      error: (err) => {
+        this.isListLoading = false;
+        delete err.error['timestamp'];
+        // render error toaster
+        this.toaster.error(err.error);
       },
     });
   }

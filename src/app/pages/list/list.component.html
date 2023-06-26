@@ -1,0 +1,17 @@
+<div class="flex justify-center items-center flex-grow" *ngIf="isLoading">
+  <app-loader></app-loader>
+</div>
+<div class="h-[calc(100vh-60px-72px)]" *ngIf="!isLoading">
+  <ul class="flex p-5 gap-5 w-full overflow-auto text-slate-950">
+    <li class="w-[200px] bg-amber-50/30 shadow-lg shadow-black/10 border-solid border-black/10 border-[1px]"
+      *ngFor="let list of lists">
+      <div class="pt-10">
+        <h1 class="flex justify-center items-end pb-5 w-full border-solid border-slate-700 border-b-[3px]">{{list.name}}
+        </h1>
+      </div>
+      <ul *ngFor="let movie of list.movies">
+        {{movie.title}}
+      </ul>
+    </li>
+  </ul>
+</div>
