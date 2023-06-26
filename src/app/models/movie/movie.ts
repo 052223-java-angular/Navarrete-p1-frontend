@@ -1,10 +1,10 @@
-import { Review } from '../review/review';
+import { ReviewRes } from '../review/review';
 
 export interface Movie {
   id: number;
   totalRating: number;
   totalVotes: number;
-  reviews?: Array<Review>;
+  reviews?: Array<ReviewRes>;
   adult: boolean;
   backdrop_path: string;
   genre_ids: Array<number>;
@@ -69,5 +69,5 @@ export interface DBMovie {
   id: number;
   totalRating: number;
   totalVotes: number;
-  reviews?: Array<Review>;
+  reviews?: Array<ReviewRes>;
 }

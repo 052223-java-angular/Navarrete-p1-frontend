@@ -156,34 +156,43 @@ export class MovieService {
       .pipe(
         catchError((err): Observable<any> => {
           // request external api data
-          this.http
-            .get<{ results: Array<TMBDMovie> }>(
-              `${this.externalApiUrl}/movie/${movieId}/recommendations`,
-              {
-                headers: new HttpHeaders()
-                  .set('Authorization', this.externalApiAuth)
-                  .set('skip', 'true'),
-                params: new HttpParams()
-                  .set('language', 'en-US')
-                  .set('page', '1'),
-              }
-            )
-            .subscribe({
-              next: (resData) => {
-                const movieArr: Array<Movie> = [];
-                // populate movieArr
-                for (let tmbdMovie of resData.results) {
-                  const { vote_average, vote_count, ...rest } = tmbdMovie;
-                  movieArr.push({
-                    ...rest,
-                    totalRating: 0,
-                    totalVotes: 0,
-                  });
-                }
+          const tmbdMovies = this.http.get<{ results: Array<TMBDMovie> }>(
+            `${this.externalApiUrl}/movie/${movieId}/recommendations`,
+            {
+              headers: new HttpHeaders()
+                .set('Authorization', this.externalApiAuth)
+                .set('skip', 'true'),
+              params: new HttpParams()
+                .set('language', 'en-US')
+                .set('page', '1'),
+            }
+          );
 
-                this.movieRecommendationSubject.next(movieArr);
-              },
-            });
+          const dbMovies = tmbdMovies.pipe(
+            switchMap((res) => {
+              const tmbdMovies = res.results;
+              const idArr: Array<number> = [];
+              for (let tmbdMovie of tmbdMovies) {
+                idArr.push(tmbdMovie.id);
+              }
+
+              return this.http.get<Array<DBMovie>>(`${this.baseUrl}/movies`, {
+                params: { ids: idArr.join(',') },
+              });
+            })
+          );
+
+          const movies = forkJoin([tmbdMovies, dbMovies]).pipe(
+            map((res) => {
+              return this.combineMovies(res[0].results, res[1]);
+            })
+          );
+
+          movies.subscribe({
+            next: (res) => {
+              this.movieRecommendationSubject.next(res);
+            },
+          });
 
           return throwError(() => err);
         })
@@ -253,6 +262,7 @@ export class MovieService {
                 });
                 counter--;
               }
+
               return movies;
             })
           );

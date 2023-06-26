@@ -1,4 +1,4 @@
-<div class="fixed top-[60px] left-0 w-full max-w-[250px]" *ngIf="errors || success" [@inOutAnimation]>
+<div class="fixed top-[60px] left-0 w-full max-w-[250px] z-[999]" *ngIf="errors || success" [@inOutAnimation]>
   <div class="p-5 bg-red-600" *ngIf="errors">
     <ul>
       <li *ngFor="let error of errors | keyvalue">

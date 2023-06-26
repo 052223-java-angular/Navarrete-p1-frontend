@@ -1,14 +1,24 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Movie } from 'src/app/models/movie/movie';
+import { DBMovie, Movie } from 'src/app/models/movie/movie';
 import { MovieService } from 'src/app/services/movie/movie.service';
 import {
   faPlus,
   faStar,
   faSquarePlus,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { OwlOptions } from 'ngx-owl-carousel-o';
+import { ReviewService } from 'src/app/services/review/review.service';
+import {
+  CreateReview,
+  ModifyReview,
+  ReviewRes,
+} from 'src/app/models/review/review';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { NgForm } from '@angular/forms';
+import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
 @Component({
   selector: 'app-movie',
@@ -16,22 +26,27 @@ import { OwlOptions } from 'ngx-owl-carousel-o';
   styleUrls: ['./movie.component.css'],
 })
 export class MovieComponent implements OnInit, OnDestroy {
+  username: string = this.authService.getUsername();
   isLoading: boolean = false;
   isRecommendationLoading: boolean = false;
   isReviewLoading: boolean = false;
+  isReviewSubmitLoading: boolean = false;
   imageBaseUrl = 'https://image.tmdb.org/t/p';
   movie!: Movie;
   movies!: Array<Movie>;
+  reviews!: Array<ReviewRes>;
 
   // subscription
   movieSubscription: Subscription = new Subscription();
   recommendationSubscription: Subscription = new Subscription();
+  reviewSubscription: Subscription = new Subscription();
   routeSubscription: Subscription = new Subscription();
 
   // icons
   faPlus = faPlus;
   faStar = faStar;
   faSquarePlus = faSquarePlus;
+  faUser = faUser;
 
   // carousel options
   isDragging = false;
@@ -47,9 +62,17 @@ export class MovieComponent implements OnInit, OnDestroy {
     margin: 20,
   };
 
+  // modal
+  reviewModalActive: boolean = false;
+  reviewId!: string;
+  isEditing: boolean = false;
+
   constructor(
+    private authService: AuthService,
     private activatedRoute: ActivatedRoute,
-    private movieService: MovieService
+    private movieService: MovieService,
+    private reviewService: ReviewService,
+    private toaster: ToasterService
   ) {}
 
   ngOnInit(): void {
@@ -57,17 +80,20 @@ export class MovieComponent implements OnInit, OnDestroy {
       // unsubscribe from prev
       this.movieSubscription.unsubscribe();
       this.recommendationSubscription.unsubscribe();
+      this.reviewSubscription.unsubscribe();
 
       this.movieSubscription = this.getMovie(+routeParams['id']);
       this.recommendationSubscription = this.getRecommendations(
         +routeParams['id']
       );
+      this.reviewSubscription = this.getReviews(+routeParams['id']);
     });
   }
 
   ngOnDestroy(): void {
     this.movieSubscription.unsubscribe();
     this.recommendationSubscription.unsubscribe();
+    this.reviewSubscription.unsubscribe();
   }
 
   getMovie(id: number): Subscription {
@@ -96,7 +122,23 @@ export class MovieComponent implements OnInit, OnDestroy {
       },
       error: (errorRes) => {
         this.isRecommendationLoading = false;
-        console.log(errorRes``);
+        console.log(errorRes);
+      },
+    });
+  }
+
+  getReviews(id: number): Subscription {
+    this.isReviewLoading = true;
+
+    return this.reviewService.getReviews(id).subscribe({
+      next: (res) => {
+        this.isReviewLoading = false;
+        this.reviews = res;
+        console.log(res);
+      },
+      error: (err) => {
+        this.isReviewLoading = false;
+        console.log(err);
       },
     });
   }
@@ -129,5 +171,129 @@ export class MovieComponent implements OnInit, OnDestroy {
         slideBy: 6,
       },
     };
+  }
+
+  showReviewModal() {
+    this.reviewModalActive = true;
+  }
+
+  hideReviewModal() {
+    this.reviewModalActive = false;
+  }
+
+  showEditReviewModal(id: string) {
+    this.reviewModalActive = true;
+    this.isEditing = true;
+    this.reviewId = id;
+  }
+
+  hideEditReviewModal() {
+    this.reviewModalActive = false;
+    this.isEditing = false;
+  }
+
+  createReview(form: NgForm, movie: Movie) {
+    // don't submit when form is invalid
+    if (form.invalid) {
+      return;
+    }
+
+    // show loading component
+    this.isReviewSubmitLoading = true;
+
+    if (this.isEditing) {
+      const review: ModifyReview = {
+        id: this.reviewId,
+        rating: form.value.rating,
+        description: form.value.description,
+        movieId: movie.id,
+      };
+
+      // make request
+      this.reviewService.modifyReview(review).subscribe({
+        next: (res) => {
+          this.reviews = this.reviews.map((item) => {
+            if ((item.id = this.reviewId)) {
+              return res;
+            }
+            return item;
+          });
+          // render success toaster
+          this.toaster.success('You have successfully edited your review.');
+          // remove loading
+          this.isReviewSubmitLoading = false;
+          // hide review modal
+          this.hideEditReviewModal();
+        },
+        error: (err) => {
+          delete err.error['timestamp'];
+          // render error toaster
+          this.toaster.error(err.error);
+          // remove loading
+          this.isReviewSubmitLoading = false;
+          // hid review modal
+          this.hideEditReviewModal();
+          console.log(err.error);
+        },
+      });
+    } else {
+      // set user values
+      const review: CreateReview = {
+        rating: form.value.rating,
+        description: form.value.description,
+        movieId: movie.id,
+        title: movie.title,
+        posterPath: movie.poster_path,
+        releaseDate: movie.release_date,
+      };
+
+      // make request
+      this.reviewService.createReview(review).subscribe({
+        next: (resData) => {
+          this.reviews = this.reviews.concat(resData);
+          // render success toaster
+          this.toaster.success('You have successfully created a new review.');
+          // remove loading
+          this.isReviewSubmitLoading = false;
+          // hide review modal
+          this.hideReviewModal();
+        },
+        error: (errorRes) => {
+          delete errorRes.error['timestamp'];
+          // render error toaster
+          this.toaster.error(errorRes.error);
+          // remove loading
+          this.isReviewSubmitLoading = false;
+          // hide review modal
+          this.hideReviewModal();
+          console.log(errorRes.error);
+        },
+      });
+    }
+
+    // reset form
+    form.reset();
+  }
+
+  deleteReview(id: string, movieId: number) {
+    this.isReviewLoading = true;
+
+    this.reviewService.deleteReview(id, movieId).subscribe({
+      next: () => {
+        this.isReviewLoading = false;
+        this.reviews = this.reviews.filter((item) => {
+          item.id != id;
+        });
+        this.toaster.success('Successfully removed review');
+      },
+      error: (err) => {
+        this.isReviewLoading = false;
+        delete err.error['timestamp'];
+        // render error toaster
+        this.toaster.error(err.error);
+        // hide review modal
+        console.log(err);
+      },
+    });
   }
 }
