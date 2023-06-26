@@ -33,4 +33,14 @@ export class ListService {
 
     return list;
   }
+
+  deleteMovieList(id: string) {
+    return this.http.delete<void>(`${this.baseUrl}/movie-lists/${id}`);
+  }
+
+  deleteMovieFromList(id: string, movieId: number) {
+    return this.http.delete<void>(
+      `${this.baseUrl}/movie-lists/${id}/movies/${movieId}`
+    );
+  }
 }

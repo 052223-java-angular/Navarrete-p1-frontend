@@ -2,15 +2,28 @@
   <app-loader></app-loader>
 </div>
 <div class="h-[calc(100vh-60px-72px)]" *ngIf="!isLoading">
-  <ul class="flex p-5 gap-5 w-full overflow-auto text-slate-950">
-    <li class="w-[200px] bg-amber-50/30 shadow-lg shadow-black/10 border-solid border-black/10 border-[1px]"
+  <ul class="flex p-5 gap-5 w-full h-full overflow-auto text-slate-950">
+    <li
+      class="w-full min-w-[250px] max-w-[300px] bg-amber-50/30 shadow-lg shadow-black/10 border-solid border-black/10 border-[1px] overflow-auto"
       *ngFor="let list of lists">
+      <div class="flex justify-end w-full">
+        <button
+          class="ml-auto mt-3 mr-3 py-2 px-4 text-end text-sm cursor-pointer bg-blue-600 text-white hover:bg-blue-800"
+          (click)="activateEditMode(list.id)">Toggle
+          edit</button>
+      </div>
       <div class="pt-10">
+        <p class="text-center text-red-600 cursor-pointer" *ngIf="isEditing && listEditing == list.id"
+          (click)="deleteMovieList(list.id)">delete</p>
         <h1 class="flex justify-center items-end pb-5 w-full border-solid border-slate-700 border-b-[3px]">{{list.name}}
         </h1>
       </div>
-      <ul *ngFor="let movie of list.movies">
-        {{movie.title}}
+      <ul class="flex flex-col p-3 gap-3">
+        <li *ngFor="let movie of list.movies">
+          <p class="text-red-600 cursor-pointer" *ngIf="isEditing && listEditing == list.id"
+            (click)="deleteMovieFromList(list.id, movie.id)">delete</p>
+          {{movie.title}}
+        </li>
       </ul>
     </li>
   </ul>
