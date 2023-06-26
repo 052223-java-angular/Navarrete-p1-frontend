@@ -17,6 +17,8 @@ import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
 import { AuthInterceptorService } from './services/auth/auth-interceptor.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { MovieComponent } from './pages/movie/movie.component';
+import { CarouselModule } from 'ngx-owl-carousel-o';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ToasterComponent,
     LoaderComponent,
     BrowseComponent,
+    MovieComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     BrowserAnimationsModule,
     FontAwesomeModule,
     NgxPaginationModule,
+    CarouselModule,
   ],
   providers: [
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

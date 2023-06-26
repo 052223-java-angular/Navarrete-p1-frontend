@@ -5,6 +5,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { BrowseComponent } from './pages/browse/browse.component';
 import { AuthGuard } from './services/auth/auth-guard.service';
+import { MovieComponent } from './pages/movie/movie.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,17 @@ const routes: Routes = [
     path: 'browse',
     component: BrowseComponent,
     canActivate: [AuthGuard],
+  },
+
+  {
+    path: 'browse',
+    children: [
+      {
+        path: 'movie/:id',
+        component: MovieComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
   },
 ];
 

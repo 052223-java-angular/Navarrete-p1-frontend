@@ -39,15 +39,18 @@ form small {
 .form-item {
   @apply flex flex-col my-2 gap-[2px] text-base text-gray-600;
 }
-.form-item input {
+.form-item input,
+textarea {
   @apply py-1 px-2 border-solid border-2 text-gray-800 border-gray-600 outline-none;
 }
-.form-item input:focus {
+.form-item input:focus,
+textarea:focus {
   @apply border-black;
 }
 .form-item .error {
   @apply text-[13.5px] text-red-600;
 }
-.form-item input.ng-invalid.ng-touched {
+.form-item input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
   @apply border-red-600;
 }
