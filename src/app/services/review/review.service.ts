@@ -14,7 +14,7 @@ import {
   ModifyReview,
   ReviewRes,
 } from 'src/app/models/review/review';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

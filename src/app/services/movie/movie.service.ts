@@ -12,7 +12,7 @@ import {
   map,
 } from 'rxjs';
 import { DBMovie, Movie, TMBDMovie } from 'src/app/models/movie/movie';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

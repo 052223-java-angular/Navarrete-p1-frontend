@@ -1,7 +1,7 @@
 <div class="flex justify-center items-center flex-grow" *ngIf="isLoading">
   <app-loader></app-loader>
 </div>
-<div class="h-[calc(100vh-60px-72px)] overflow-auto" *ngIf="!isLoading">
+<div class="h-[calc(100vh-72px-72px)] overflow-auto" *ngIf="!isLoading">
   <ul class="flex p-5 gap-5 w-full h-full overflow-auto text-slate-950">
     <li>
       <form class="w-full max-w-[400px] rounded-xl z-20" (ngSubmit)="createList(f)" #f="ngForm">
