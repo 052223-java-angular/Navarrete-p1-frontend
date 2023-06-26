@@ -7,6 +7,7 @@ import { BrowseComponent } from './pages/browse/browse.component';
 import { AuthGuard } from './services/auth/auth-guard.service';
 import { MovieComponent } from './pages/movie/movie.component';
 import { ListComponent } from './pages/list/list.component';
+import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,10 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
     ],
+  },
+  {
+    path: '**',
+    component: PageNotFoundComponent,
   },
 ];
 
