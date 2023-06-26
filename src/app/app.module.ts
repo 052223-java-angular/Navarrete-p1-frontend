@@ -20,6 +20,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { MovieComponent } from './pages/movie/movie.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { ListComponent } from './pages/list/list.component';
+import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ListComponent } from './pages/list/list.component';
     BrowseComponent,
     MovieComponent,
     ListComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
